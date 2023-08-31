@@ -4,7 +4,7 @@ const logger = require('./loggerMiddleware.js')
 const morgan = require('morgan')
 
 app.use(express.json())
-// app.use(morgan('tiny'))
+app.use(morgan('tiny'))
 
 app.use(logger)
 
