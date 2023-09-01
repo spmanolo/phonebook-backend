@@ -1,17 +1,20 @@
 require('dotenv').config()
 
-const Person = require('./models/person.js')
-
 const express = require('express')
 const app = express()
-const logger = require('./loggerMiddleware.js')
 const cors = require('cors')
+const notFound = require('./middlewares/notFound.js')
+const handleErrors = require('./middlewares/handleErrors.js')
+const logger = require('./middlewares/logger.js')
+
+const Person = require('./models/Person.js')
 
 app.use(express.json())
+
+// servir frontend estatico usando la build
 app.use(express.static('build'))
 
 app.use(logger)
-
 app.use(cors())
 
 const persons = []
@@ -21,10 +24,9 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  Person.find({})
-    .then(person => {
-      response.json(person)
-    })
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 // app.get('/api/info', (request, response) => {
@@ -41,7 +43,7 @@ app.get('/api/persons', (request, response) => {
 //   response.send(res)
 // })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const { id } = request.params
 
   Person.findById(id)
@@ -52,16 +54,17 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()
       }
     })
-    .catch(err => {
-      console.error(err)
-      response.status(400).end()
-    })
+    .catch(next)
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-  // const { id } = request.params
-  // persons = persons.filter(person => person.id !== id)
-  // response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+  const { id } = request.params
+
+  Person.findByIdAndRemove(id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(next)
 })
 
 // app.post('/api/persons', (request, response) => {
@@ -96,7 +99,7 @@ app.delete('/api/persons/:id', (request, response) => {
 //   response.status(201).json(newPerson)
 // })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const person = request.body
 
   if (!person.name || !person.number) {
@@ -113,13 +116,14 @@ app.post('/api/persons', (request, response) => {
     .then(person => {
       response.status(201).json(person)
     })
+    .catch(next)
 })
 
-app.use((request, response) => {
-  response.status(404).json({
-    error: 'Not Found'
-  })
-})
+// endpoint not found
+app.use(notFound)
+
+// handleErrors
+app.use(handleErrors)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

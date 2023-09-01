@@ -1,5 +1,5 @@
-const { Schema, model } = require('mongoose')
 const mongoose = require('mongoose')
+const { Schema, model } = require('mongoose')
 
 const connectionString = process.env.MONGODB_URI
 

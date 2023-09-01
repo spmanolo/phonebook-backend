@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 // const password = require('./password.js')
-const Person = require('./models/person.js')
+const Person = require('./models/Person.js')
 
 const argv = process.argv.slice(2)
 
