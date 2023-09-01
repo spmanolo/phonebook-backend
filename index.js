@@ -1,13 +1,10 @@
 const express = require('express')
 const app = express()
 const logger = require('./loggerMiddleware.js')
-const morgan = require('morgan')
 const cors = require('cors')
 
 app.use(express.json())
 app.use(express.static('build'))
-
-app.use(morgan('tiny'))
 
 app.use(logger)
 
