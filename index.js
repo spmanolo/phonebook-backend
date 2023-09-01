@@ -1,7 +1,10 @@
+require('./mongo.js')
+
 const express = require('express')
 const app = express()
 const logger = require('./loggerMiddleware.js')
 const cors = require('cors')
+const Person = require('./models/Person.js')
 
 app.use(express.json())
 app.use(express.static('build'))
@@ -10,35 +13,17 @@ app.use(logger)
 
 app.use(cors())
 
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: 1
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4
-  }
-]
+let persons = []
 
 app.get('/', (request, response) => {
-  response.send('<h1>hola mundo</h1>')
+  response.send('<h1>Welcome to Phonebook Site Web</h1>')
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({})
+    .then(person => {
+      response.json(person)
+    })
 })
 
 app.get('/api/info', (request, response) => {
