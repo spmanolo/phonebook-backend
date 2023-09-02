@@ -14,7 +14,7 @@ app.use(express.json())
 // servir frontend estatico usando la build
 app.use(express.static('build'))
 
-app.use(logger)
+// app.use(logger)
 app.use(cors())
 
 const persons = []
@@ -116,6 +116,20 @@ app.post('/api/persons', (request, response, next) => {
     .then(person => {
       response.status(201).json(person)
     })
+    .catch(next)
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const { id } = request.params
+  const newPerson = request.body
+
+  const newPersonToAdd = {
+    name: newPerson.name,
+    number: newPerson.number
+  }
+
+  Person.findByIdAndUpdate(id, newPersonToAdd, { new: true })
+    .then(updatedPerson => { response.status(201).json(updatedPerson) })
     .catch(next)
 })
 
