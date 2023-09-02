@@ -14,10 +14,8 @@ app.use(express.json())
 // servir frontend estatico usando la build
 app.use(express.static('build'))
 
-// app.use(logger)
+app.use(logger)
 app.use(cors())
-
-const persons = []
 
 app.get('/', (request, response) => {
   response.send('<h1>Welcome to Phonebook Site Web</h1>')
@@ -29,19 +27,20 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-// app.get('/api/info', (request, response) => {
-//   const ids = persons.map(person => { return person.id })
-//   const maxId = Math.max(...ids)
+app.get('/api/info', (request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      const date = new Date().toDateString()
 
-//   const date = new Date().toDateString()
+      const res = `
+      <h2>Phonebook has info for ${persons.length} people</h2>
+      <p>${date}</p>
+      `
 
-//   const res = `
-//   <h2>Phonebook has info for ${maxId} people</h2>
-//   <p>${date}</p>
-//   `
-
-//   response.send(res)
-// })
+      response.send(res)
+    })
+    .catch(next)
+})
 
 app.get('/api/persons/:id', (request, response, next) => {
   const { id } = request.params
