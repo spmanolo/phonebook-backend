@@ -14,11 +14,13 @@ mongoose.connect(connectionString)
 const personSchema = new Schema({
   name: {
     type: String,
+    minlength: 3,
     unique: true,
     required: true
   },
   number: {
     type: String,
+    minlength: 8,
     required: true
   }
 })
