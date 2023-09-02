@@ -67,38 +67,6 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(next)
 })
 
-// app.post('/api/persons', (request, response) => {
-//   const person = request.body
-
-//   if (!person.name || !person.number) {
-//     return response.status(400).json({
-//       error: 'name or number is missing'
-//     })
-//   }
-
-//   const alreadyAdded = persons.find(p => p.name === person.name)
-
-//   if (alreadyAdded) {
-//     return response.status(400).json({
-//       error: `${person.name} is already added`
-//     })
-//   }
-
-//   const max = 200
-//   const min = 5
-//   const id = parseInt(Math.random() * (max - min) + min)
-
-//   const newPerson = {
-//     id,
-//     name: person.name,
-//     number: person.number
-//   }
-
-//   persons = [...persons, newPerson]
-
-//   response.status(201).json(newPerson)
-// })
-
 app.post('/api/persons', (request, response, next) => {
   const person = request.body
 
